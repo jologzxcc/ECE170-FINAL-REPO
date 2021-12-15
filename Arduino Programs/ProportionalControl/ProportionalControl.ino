@@ -33,8 +33,8 @@ void loop()
   // Read new position
   int analog_in = analogRead(ANALOG_IN);
   int map_values = map(analog_in, 0, 2038, 0 , 1024);
-  Serial.println(map_values);
-  stepper.moveTo(map_values);
+  Serial.println(analog_in);
+  stepper.moveTo(analog_in);
   stepper.setSpeed(1000);
   stepper.runSpeedToPosition();
 }
