@@ -5,7 +5,6 @@ import serial
 import time
 
 from inverse_kinematics import inv, scaled_angles
-from arduino import send_to_arduino
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -81,16 +80,16 @@ def estimate_hands():
           
             inverse = inv((dot))
             joints = inverse[1]
-            new_angles = scaled_angles(inverse[0])
+            angles = scaled_angles(inverse[0])
 
             image = cv2.line(image, (int(joints[0].x), int(joints[0].y)), (int(joints[1].x), int(joints[1].y)), color=(0, 255, 0), thickness=2)
             image = cv2.line(image, (int(joints[1].x), int(joints[1].y)), (int(joints[2].x), int(joints[2].y)), color=(0, 255, 0), thickness=2)
             image = cv2.line(image, (int(joints[2].x), int(joints[2].y)), (int(joints[3].x), int(joints[3].y)), color=(0, 255, 0), thickness=2)
             image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
-            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {new_angles}")
+            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}")
 
-            arduino.write(new_angles.encode())
+            arduino.write(angles.encode())
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
