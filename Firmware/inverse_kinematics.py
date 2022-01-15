@@ -1,6 +1,5 @@
 import pyfabrik
-from vectormath import Vector2, Vector3
-
+from vectormath import Vector2
 initial_joint_positions = [Vector2(0, 0), Vector2(350, 265), Vector2(550, 415), Vector2(650, 490)]
 tolerance = 0.02
 
