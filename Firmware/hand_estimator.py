@@ -13,8 +13,10 @@ mp_hands = mp.solutions.hands
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 class_and_coordinates = ""
 
-arduino = serial.Serial(port='COM3', baudrate=9600)
-arduino.timeout = 1
+# arduino = serial.Serial(port='COM3', baudrate=9600)
+# arduino.timeout = 1
+
+seconds = time.time()
 
 def estimate_hands():
   with mp_hands.Hands(
@@ -84,13 +86,15 @@ def estimate_hands():
 
             image = cv2.line(image, (int(joints[0].x), int(joints[0].y)), (int(joints[1].x), int(joints[1].y)), color=(0, 255, 0), thickness=2)
             image = cv2.line(image, (int(joints[1].x), int(joints[1].y)), (int(joints[2].x), int(joints[2].y)), color=(0, 255, 0), thickness=2)
-            image = cv2.line(image, (int(joints[2].x), int(joints[2].y)), (int(joints[3].x), int(joints[3].y)), color=(0, 255, 0), thickness=2)
+        
             image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
-            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}")
+            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}")
 
-            arduino.write(angles.encode())
+        #     arduino.write(angles.encode())
 
+        #     print(arduino.readLine().decode('ascii'))
+        # arduino.close()
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -100,3 +104,4 @@ def estimate_hands():
     except:
       print("OUT OF BOUNDS RERUN THE PROGRAM")
       pass
+
