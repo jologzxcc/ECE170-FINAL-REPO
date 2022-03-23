@@ -2,7 +2,7 @@ import pyfabrik
 from vectormath import Vector2
 
 
-initial_joint_positions = [Vector2(320, 480), Vector2(160, 240), Vector2(0, 0)]
+initial_joint_positions = [Vector2(320, 480), Vector2(610, 240), Vector2(900, 0)]
 tolerance = 0.02
 
 fab = pyfabrik.Fabrik2D(initial_joint_positions, tolerance)
