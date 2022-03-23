@@ -1,7 +1,6 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import serial
 import time
 
 from inverse_kinematics import inv, scaled_angles
@@ -12,9 +11,6 @@ mp_hands = mp.solutions.hands
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 class_and_coordinates = ""
-
-# arduino = serial.Serial(port='COM3', baudrate=9600)
-# arduino.timeout = 1
 
 seconds = time.time()
 
