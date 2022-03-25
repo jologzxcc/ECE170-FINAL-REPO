@@ -91,7 +91,7 @@ def estimate_hands():
         
             image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
-            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}" + f", depth: {int(float(z_axis) * -1000)}")
+            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}" + f", depth: {abs(int(float(z_axis) * 1000))}")
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
