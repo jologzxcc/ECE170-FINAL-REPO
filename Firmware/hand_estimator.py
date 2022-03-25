@@ -16,6 +16,7 @@ seconds = time.time()
 
 def estimate_hands():
   with mp_hands.Hands(
+      max_num_hands = 1,
       model_complexity = 0,
       min_detection_confidence = 0.5,
       min_tracking_confidence = 0.5) as hands:
@@ -51,7 +52,8 @@ def estimate_hands():
             
             normalized_landmark_index_fingertip = handLandmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
             pixel_coordinates_landmark_index_fingertip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_index_fingertip.x, normalized_landmark_index_fingertip.y, img_width, img_height)
-            
+            z_axis = normalized_landmark_index_fingertip.z
+
             normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
             pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, normalized_landmark_thumbtip.y, img_width, img_height)
             
@@ -89,7 +91,7 @@ def estimate_hands():
         
             image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
-            #print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}" + f", depth: {int(depth)}")
+            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}" + f", depth: {float(z_axis) * -1000}")
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
