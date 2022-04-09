@@ -39,27 +39,20 @@ def estimate_hands():
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
         if results.multi_hand_landmarks != None:
-          
-          # for hand_landmarks in results.multi_hand_landmarks:
-          #   mp_drawing.draw_landmarks(
-          #       image,
-          #       hand_landmarks,
-          #       mp_hands.HAND_CONNECTIONS,
-          #       mp_drawing_styles.get_default_hand_landmarks_style(),
-          #       mp_drawing_styles.get_default_hand_connections_style())
 
           for handLandmarks in results.multi_hand_landmarks:
-            
             normalized_landmark_index_fingertip = handLandmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
-            pixel_coordinates_landmark_index_fingertip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_index_fingertip.x, normalized_landmark_index_fingertip.y, img_width, img_height)
+            pixel_coordinates_landmark_index_fingertip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_index_fingertip.x, 
+                                                                                                     normalized_landmark_index_fingertip.y, 
+                                                                                                     img_width, 
+                                                                                                     img_height)
             z_axis = normalized_landmark_index_fingertip.z
 
             normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
-            pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, normalized_landmark_thumbtip.y, img_width, img_height)
-            
-            # normalized_landmark_wrist = handLandmarks.landmark[mp_hands.HandLandmark.WRIST.value]
-            # pixel_coordinates_landmark_wrist = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_wrist.x, normalized_landmark_wrist.y, normalized_landmark_wrist.z,img_width, img_height)
-            # depth = pixel_coordinates_landmark_wrist[0]
+            pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, 
+                                                                                              normalized_landmark_thumbtip.y, 
+                                                                                              img_width, 
+                                                                                              img_height)
 
             distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
     
@@ -68,31 +61,36 @@ def estimate_hands():
             else:
               class_and_coordinates = "OPEN"
 
-            # Centroid
-            # normalized_landmark_wrist = handLandmarks.landmark[mp_hands.HandLandmark.WRIST.value]
-            # pixel_coordinates_landmark_wrist = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_wrist.x, normalized_landmark_wrist.y, img_width, img_height)
-            
-            # normalized_landmark_5 = handLandmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP.value]
-            # pixel_coordinates_landmark_5 = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_5.x, normalized_landmark_5.y, img_width, img_height)
-            
-            # cx = int((pixel_coordinates_landmark_wrist[0] + pixel_coordinates_landmark_5[0])/2)
-            # cy = int((pixel_coordinates_landmark_wrist[1] + pixel_coordinates_landmark_5[1])/2)
-
-            # centroid = (cx, cy, 0 )
-            
             dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
           
             inverse = inv((dot))
             joints = inverse[1]
             angles = scaled_angles(inverse[0])
 
-            image = cv2.line(image, (int(joints[0].x), int(joints[0].y)), (int(joints[1].x), int(joints[1].y)), color=(0, 255, 0), thickness=2)
-            image = cv2.line(image, (int(joints[1].x), int(joints[1].y)), (int(joints[2].x), int(joints[2].y)), color=(0, 255, 0), thickness=2)
+            image = cv2.line(image, (int(joints[0].x), 
+                          int(joints[0].y)), 
+                          (int(joints[1].x), 
+                          int(joints[1].y)), 
+                          color=(0, 255, 0), 
+                          thickness=2)
+
+            image = cv2.line(image, (int(joints[1].x), 
+                          int(joints[1].y)), 
+                          (int(joints[2].x), 
+                          int(joints[2].y)), 
+                          color=(0, 255, 0), 
+                          thickness=2)
         
             image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
-            print(class_and_coordinates + f", coordinates {dot}" + f", angles: {inverse[0]}" + f", new angles: {angles}" + f", time: {time.time() - seconds}" + f", depth: {abs(int(float(z_axis) * 1000))}")
+            print(class_and_coordinates + 
+            f", coordinates {dot}" + 
+            f", angles: {inverse[0]}" + 
+            f", new angles: {angles}" + 
+            f", time: {time.time() - seconds}" + 
+            f", depth: {abs(int(float(z_axis) * 1000))}")
 
+            
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
