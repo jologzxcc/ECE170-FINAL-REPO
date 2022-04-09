@@ -4,7 +4,6 @@ import numpy as np
 import time
 
 from inverse_kinematics import inv, scaled_angles
-from transmit import transmit
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
