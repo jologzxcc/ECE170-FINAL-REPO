@@ -93,8 +93,7 @@ def estimate_hands():
 
             angle_depth = [angles[0], angles[1], depth, distance]
             # print(angle_depth)
-            # transmit(angle_depth)
-
+            transmit(angle_depth)
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
@@ -105,4 +104,5 @@ def estimate_hands():
     except:
       print("OUT OF BOUNDS RERUN THE PROGRAM")
       pass
+    
 
