@@ -54,16 +54,25 @@ def estimate_hands():
                                                                                               img_width, 
                                                                                               img_height)
 
+            normalized_landmark_wrist = handLandmarks.landmark[mp_hands.HandLandmark.WRIST.value]
+            pixel_coordinates_landmark_wrist = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_wrist.x, 
+                                                                                              normalized_landmark_wrist.y, 
+                                                                                              img_width, 
+                                                                                              img_height)
+
+            normalized_landmark_mcp = handLandmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP.value]
+            pixel_coordinates_landmark_mcp = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_mcp.x, 
+                                                                                              normalized_landmark_mcp.y, 
+                                                                                              img_width, 
+                                                                                              img_height)
+
             distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
-    
-            if distance <= 30:
-              class_and_coordinates = "CLOSE"
-            else:
-              class_and_coordinates = "OPEN"
+            centroid = (int((pixel_coordinates_landmark_mcp[0] + pixel_coordinates_landmark_wrist[0])/2),
+                        int((pixel_coordinates_landmark_mcp[1] + pixel_coordinates_landmark_wrist[1])/2))
 
             dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
           
-            inverse = inv((dot))
+            inverse = inv((centroid))
             joints = inverse[1]
             angles = scaled_angles(inverse[0])
 
@@ -81,7 +90,7 @@ def estimate_hands():
                           color=(0, 255, 0), 
                           thickness=2)
         
-            image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
+            image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
             
             # print(class_and_coordinates + 
             # f", coordinates {dot}" + 

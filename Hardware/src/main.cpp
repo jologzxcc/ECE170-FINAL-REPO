@@ -5,7 +5,8 @@
 
 
 SerialTransfer myTransfer;
-Servo myservo; 
+Servo myservo;
+int claw = 0; 
 
 void setup(){
   Serial.begin(115200);
@@ -17,17 +18,14 @@ void setup(){
 void loop(){
 
   if(myTransfer.available()){
-    // send all received data back to Python
+    // send all received data back to Python    
     for(uint16_t i=0; i < myTransfer.bytesRead; i++){
       myTransfer.packet.txBuff[i] = myTransfer.packet.rxBuff[i];
-    }
-
-    int claw = myTransfer.packet.txBuff[4];
-    myTransfer.sendData(claw);
-    delay(5);
-    myservo.write(claw);            
-    delay(5);       
-
+      claw = myTransfer.packet.rxBuff[4];
+      myservo.write(claw);            
+        }
+      int send_claw = myTransfer.packet.txBuff[4];
+      myTransfer.sendData(send_claw);
      }       
   }
 

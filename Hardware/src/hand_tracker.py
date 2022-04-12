@@ -58,16 +58,25 @@ if __name__ == '__main__':
                                                                                                         img_width, 
                                                                                                         img_height)
                         
-                        distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
+                        normalized_landmark_wrist = handLandmarks.landmark[mp_hands.HandLandmark.WRIST.value]
+                        pixel_coordinates_landmark_wrist = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_wrist.x, 
+                                                                                              normalized_landmark_wrist.y, 
+                                                                                              img_width, 
+                                                                                              img_height)
 
-                        if distance <= 30:
-                            class_and_coordinates = "CLOSE"
-                        else:
-                            class_and_coordinates = "OPEN"
+                        normalized_landmark_mcp = handLandmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP.value]
+                        pixel_coordinates_landmark_mcp = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_mcp.x, 
+                                                                                                        normalized_landmark_mcp.y, 
+                                                                                                        img_width, 
+                                                                                                        img_height)
+
+                        distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
+                        centroid = (int((pixel_coordinates_landmark_mcp[0] + pixel_coordinates_landmark_wrist[0])/2),
+                                    int((pixel_coordinates_landmark_mcp[1] + pixel_coordinates_landmark_wrist[1])/2))
 
                         dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
     
-                        inverse = inv((dot))
+                        inverse = inv((centroid))
                         joints = inverse[1]
                         angles = scaled_angles(inverse[0])
 
@@ -85,7 +94,7 @@ if __name__ == '__main__':
                             color=(0, 255, 0), 
                             thickness=2)
 
-                        image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
+                        image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
                         angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth]
                         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
@@ -109,12 +118,12 @@ if __name__ == '__main__':
                                 else:
                                     print('ERROR: {}'.format(link.status))
                         
-                        rec_list_  = link.rx_obj(obj_type=type(list_),
-                                obj_byte_size=4,
-                                list_format='i')
+                        # rec_list_  = link.rx_obj(obj_type=type(list_),
+                        #         obj_byte_size=4,
+                        #         list_format='i')
 
                         print('SENT: {}'.format(list_))
-                        print('RCVD: {}'.format(rec_list_))
+                        # print('RCVD: {}'.format(rec_list_))
                         print(' ')  
     
         except KeyboardInterrupt:
