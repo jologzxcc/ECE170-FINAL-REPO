@@ -95,8 +95,8 @@ if __name__ == '__main__':
                             thickness=2)
 
                         image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
-                        angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth]
                         cv2.imshow('Detected Hands', cv2.flip(image, 1))
+                        angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth]
 
                         if cv2.waitKey(1) & 0xFF == ord('q'):
                             cap.release()
@@ -118,12 +118,12 @@ if __name__ == '__main__':
                                 else:
                                     print('ERROR: {}'.format(link.status))
                         
-                        # rec_list_  = link.rx_obj(obj_type=type(list_),
-                        #         obj_byte_size=4,
-                        #         list_format='i')
+                        rec_list_  = link.rx_obj(obj_type=type(list_),
+                                obj_byte_size=list_size,
+                                list_format='i')
 
                         print('SENT: {}'.format(list_))
-                        # print('RCVD: {}'.format(rec_list_))
+                        print('RCVD: {}'.format(rec_list_))
                         print(' ')  
     
         except KeyboardInterrupt:

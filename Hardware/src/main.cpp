@@ -18,14 +18,20 @@ void setup(){
 void loop(){
 
   if(myTransfer.available()){
-    // send all received data back to Python    
     for(uint16_t i=0; i < myTransfer.bytesRead; i++){
       myTransfer.packet.txBuff[i] = myTransfer.packet.rxBuff[i];
-      claw = myTransfer.packet.rxBuff[4];
-      myservo.write(claw);            
-        }
-      int send_claw = myTransfer.packet.txBuff[4];
-      myTransfer.sendData(send_claw);
+      }
+
+//////////////////////////  SERVO CODE  ///////////////////////////////////////////////////////////////////
+      
+      claw = myTransfer.packet.rxBuff[0];
+      int mapped_claw = map(claw, 200, 0, 0, 120);
+      myservo.write(mapped_claw);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      myTransfer.sendData( myTransfer.bytesRead);
+
      }       
   }
 

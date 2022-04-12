@@ -100,7 +100,7 @@ def estimate_hands():
             # f", depth: {abs(int(float(z_axis) * 1000))}")
 
             angle_depth = [angles[0], angles[1], depth, distance]
-            # print(angle_depth)
+            print(angle_depth)
             # transmit(angle_depth)
 
 
