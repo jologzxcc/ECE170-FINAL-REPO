@@ -6,7 +6,6 @@ import time
 from pySerialTransfer import pySerialTransfer as txfer
 from inverse_kinematics import inv, scaled_angles
 
-
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
@@ -87,7 +86,7 @@ if __name__ == '__main__':
                             thickness=2)
 
                         image = cv2.circle(image, dot[:2], radius=10, color=(0, 0, 255), thickness=-1)
-                        angle_depth = [int(angles[0]), int(angles[1]), depth, int(distance)]
+                        angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth]
                         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 
                         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -111,7 +110,7 @@ if __name__ == '__main__':
                                     print('ERROR: {}'.format(link.status))
                         
                         rec_list_  = link.rx_obj(obj_type=type(list_),
-                                obj_byte_size=list_size,
+                                obj_byte_size=4,
                                 list_format='i')
 
                         print('SENT: {}'.format(list_))
