@@ -20,9 +20,6 @@ def scaled_angles(orig_angles):
             new_angles.append(round(angle + 90))
         else: 
             new_angles.append(round(angle + 90))
-    
-    # str_angles = ' '.join([str(elem) for elem in new_angles[:-1]])
-    
     return new_angles
 
 def normalized(value):
