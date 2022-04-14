@@ -1,3 +1,3 @@
-from hand_estimator import estimate_hands
+from hand_tracker import track
 
-estimate_hands()
+track()

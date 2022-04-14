@@ -15,7 +15,7 @@ class_and_coordinates = ""
 
 seconds = time.time()
 
-if __name__ == '__main__':
+def track():
 
     with mp_hands.Hands(
             max_num_hands = 1,
