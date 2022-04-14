@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import time
 
-from inverse_kinematics import inv, scaled_angles
+from inverse_kinematics import inv, scaled_angles, normalized
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -47,7 +47,8 @@ def estimate_hands():
                                                                                                      img_width, 
                                                                                                      img_height)
             z_axis = normalized_landmark_index_fingertip.z
-            depth = abs(int(float(z_axis) * 1000))
+            depth = normalized(abs(int(float(z_axis) * 1500)))
+
             normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
             pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, 
                                                                                               normalized_landmark_thumbtip.y, 

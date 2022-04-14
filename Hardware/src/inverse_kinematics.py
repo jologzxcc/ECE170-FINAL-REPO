@@ -1,4 +1,5 @@
 import pyfabrik
+import numpy as np
 from vectormath import Vector2
 
 
@@ -23,6 +24,11 @@ def scaled_angles(orig_angles):
     # str_angles = ' '.join([str(elem) for elem in new_angles[:-1]])
     
     return new_angles
+
+def normalized(value):
+    normalized_value = 500 * np.tanh((1/1000) * value)
+    return int(normalized_value)
+
 
 
 
