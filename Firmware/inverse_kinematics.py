@@ -29,8 +29,9 @@ def scaled_angles(orig_angles):
 
 
 def normalized(value):
-    normalized_value = 300 * np.tanh((1/500) * value)
+    normalized_value = 500 * np.tanh((1/1000) * value)
     return int(normalized_value)
+
 
 
 

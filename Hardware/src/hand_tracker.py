@@ -13,10 +13,12 @@ mp_hands = mp.solutions.hands
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 class_and_coordinates = ""
 
-seconds = time.time()
+# start_time = time.time()
+# counter = 1
 
 def track():
-
+    start_time = time.time()
+    counter = 1
     with mp_hands.Hands(
             max_num_hands = 1,
             model_complexity = 0,
@@ -29,6 +31,7 @@ def track():
             time.sleep(2) 
 
             while cap.isOpened():
+                current_time = time.time() - start_time
                 send_size = 0
                 success, image = cap.read()
                 img_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -102,30 +105,34 @@ def track():
                         if cv2.waitKey(1) & 0xFF == ord('q'):
                             cap.release()
                             break
-
-                        list_ = angle_depth
-                        list_size = link.tx_obj(list_)
-                        send_size += list_size
-                        link.send(send_size)
-
-                        while not link.available():
-                            if link.status < 0:
-                                if link.status == txfer.CRC_ERROR:
-                                    print('ERROR: CRC_ERROR')
-                                elif link.status == txfer.PAYLOAD_ERROR:
-                                    print('ERROR: PAYLOAD_ERROR')
-                                elif link.status == txfer.STOP_BYTE_ERROR:
-                                    print('ERROR: STOP_BYTE_ERROR')
-                                else:
-                                    print('ERROR: {}'.format(link.status))
                         
-                        rec_list_  = link.rx_obj(obj_type=type(list_),
-                                obj_byte_size=list_size,
-                                list_format='i')
+                        if current_time > counter:
+                            list_ = angle_depth
+                            list_size = link.tx_obj(list_)
+                            send_size += list_size
+                            link.send(send_size)
+                            counter = counter + 2
 
-                        print('SENT: {}'.format(list_))
-                        print('RCVD: {}'.format(rec_list_))
-                        print(' ')  
+
+                            while not link.available():
+                                if link.status < 0:
+                                    if link.status == txfer.CRC_ERROR:
+                                        print('ERROR: CRC_ERROR')
+                                    elif link.status == txfer.PAYLOAD_ERROR:
+                                        print('ERROR: PAYLOAD_ERROR')
+                                    elif link.status == txfer.STOP_BYTE_ERROR:
+                                        print('ERROR: STOP_BYTE_ERROR')
+                                    else:
+                                        print('ERROR: {}'.format(link.status))
+                            
+                            # rec_list_  = link.rx_obj(obj_type=type(list_),
+                            #         obj_byte_size=list_size,
+                            #         list_format='i')
+
+                            print('SENT: {}'.format(list_))
+                            # print('RCVD: {}'.format(rec_list_))
+                            print(' ')  
+                            
     
         except KeyboardInterrupt:
             try:

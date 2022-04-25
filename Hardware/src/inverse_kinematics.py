@@ -27,6 +27,12 @@ def normalized(value):
     return int(normalized_value)
 
 
+    
+
+
+
+
+
 
 
 
