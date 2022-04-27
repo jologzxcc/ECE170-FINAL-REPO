@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from pySerialTransfer import pySerialTransfer as txfer
-from inverse_kinematics import inv, scaled_angles, normalized
+from inverse_kinematics import inv, get_angle, normalized
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -12,9 +12,6 @@ mp_hands = mp.solutions.hands
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 class_and_coordinates = ""
-
-# start_time = time.time()
-# counter = 1
 
 def track():
     start_time = time.time()
@@ -26,7 +23,7 @@ def track():
             min_tracking_confidence = 0.5) as hands:
 
         try:
-            link = txfer.SerialTransfer('COM3')
+            link = txfer.SerialTransfer('COM4')
             link.open()
             time.sleep(2) 
 
@@ -82,7 +79,7 @@ def track():
     
                         inverse = inv((centroid))
                         joints = inverse[1]
-                        angles = scaled_angles(inverse[0])
+                        angles = get_angle(joints)
 
                         image = cv2.line(image, (int(joints[0].x), 
                             int(joints[0].y)), 

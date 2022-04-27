@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import time
 
-from inverse_kinematics import inv, scaled_angles, normalized
+from inverse_kinematics import inv, scaled_angles, normalized, get_angle
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -75,7 +75,7 @@ def estimate_hands():
           
             inverse = inv((centroid))
             joints = inverse[1]
-            angles = scaled_angles(inverse[0])
+            angles = get_angle(joints)
 
             image = cv2.line(image, (int(joints[0].x), 
                           int(joints[0].y)), 
@@ -92,17 +92,8 @@ def estimate_hands():
                           thickness=2)
         
             image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
-            
-            # print(class_and_coordinates + 
-            # f", coordinates {dot}" + 
-            # f", angles: {inverse[0]}" + 
-            # f", new angles: {angles}" + 
-            # f", time: {time.time() - seconds}" + 
-            # f", depth: {abs(int(float(z_axis) * 1000))}")
-
-            angle_depth = [angles[0], angles[1], depth, distance]
+            angle_depth = [int(angles[0]), int(angles[1]), depth, distance, int(joints[1].y)]
             print(angle_depth)
-            # transmit(angle_depth)
 
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
