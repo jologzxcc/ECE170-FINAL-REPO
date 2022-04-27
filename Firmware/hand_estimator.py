@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import time
 
-from inverse_kinematics import inv, scaled_angles, normalized, get_angle
+from inverse_kinematics import inv, normalized, get_angle
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
