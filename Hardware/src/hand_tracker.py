@@ -108,7 +108,7 @@ def track():
                             list_size = link.tx_obj(list_)
                             send_size += list_size
                             link.send(send_size)
-                            counter = counter + 2
+                            counter = counter + 2.5
 
 
                             while not link.available():
