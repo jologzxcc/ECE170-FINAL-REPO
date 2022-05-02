@@ -35,8 +35,6 @@ def get_angle(joints):
         adjacent = joints[1].x - joints[0].x
         angle_1 = 180 + np.arccos(adjacent/hypotenuse) * (180/np.pi)
 
-    
-
     return angle_1, angle_2
 
 def normalized(value):

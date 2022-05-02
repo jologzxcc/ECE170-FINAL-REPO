@@ -36,11 +36,11 @@ void setup(){
   stepper_depth.setMaxSpeed(2000);
   stepper_depth.setAcceleration(2000);
   
-  stepper_1.setMaxSpeed(4000);
-  stepper_1.setAcceleration(4000);
+  stepper_1.setMaxSpeed(2000);
+  stepper_1.setAcceleration(2000);
   
-  stepper_2.setMaxSpeed(4000);
-  stepper_2.setAcceleration(4000);
+  stepper_2.setMaxSpeed(2000);
+  stepper_2.setAcceleration(2000);
   
 }
 
@@ -66,9 +66,9 @@ if(true){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////  MOTOR 1 CODE  /////////////////////////////////////////////////////////////////
       
-      int step_angle1 = angle1 / 1.8;
-      stepper_1.moveTo(-(step_angle1 * 4.5));
-      stepper_1.run();
+      // int step_angle1 = angle1 / 1.8;
+      // stepper_1.moveTo(-(step_angle1 * 4.5));
+      // stepper_1.run();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////  MOTOR 2 CODE  /////////////////////////////////////////////////////////////////
@@ -86,8 +86,8 @@ if(true){
       //       stepper_depth.setSpeed(1000);
       //       stepper_depth.run();
       //       }
-      stepper_depth.moveTo(-(depth * 20));
-      stepper_depth.run();
+      stepper_2.moveTo(depth * 50);
+      stepper_2.run();
       
       
 
