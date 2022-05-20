@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from pySerialTransfer import pySerialTransfer as txfer
-from inverse_kinematics import inv, get_angle, normalized
+from inverse_kinematics import inv, get_angle, normalized, rotate
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -23,7 +23,7 @@ def track():
             min_tracking_confidence = 0.5) as hands:
 
         try:
-            link = txfer.SerialTransfer('COM4')
+            link = txfer.SerialTransfer('COM8')
             link.open()
             time.sleep(2) 
 
@@ -80,7 +80,8 @@ def track():
                         inverse = inv((centroid))
                         joints = inverse[1]
                         angles = get_angle(joints)
-
+                        rotation = rotate(pixel_coordinates_landmark_thumbtip, pixel_coordinates_landmark_index_fingertip)
+                      
                         image = cv2.line(image, (int(joints[0].x), 
                             int(joints[0].y)), 
                             (int(joints[1].x), 
@@ -97,7 +98,7 @@ def track():
 
                         image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
                         cv2.imshow('Detected Hands', cv2.flip(image, 1))
-                        angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth]
+                        angle_depth = [int(distance), int(angles[0]), int(angles[1]), depth, int(rotation)]
 
                         if cv2.waitKey(1) & 0xFF == ord('q'):
                             cap.release()
@@ -108,7 +109,7 @@ def track():
                             list_size = link.tx_obj(list_)
                             send_size += list_size
                             link.send(send_size)
-                            counter = counter + 2.5
+                            counter = counter + 0.5
 
 
                             while not link.available():

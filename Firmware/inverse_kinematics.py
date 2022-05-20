@@ -9,6 +9,7 @@ initial_joint_positions = [Vector2(320, 480), Vector2(480, 240), Vector2(640, 0)
 tolerance = 0.02
 
 fab = pyfabrik.Fabrik2D(initial_joint_positions, tolerance)
+depth = [0, 0]
 
 def inv(coordinate):
     fab.move_to(Vector2(coordinate))
@@ -35,30 +36,22 @@ def get_angle(joints):
         adjacent = joints[1].x - joints[0].x
         angle_1 = 180 + np.arccos(adjacent/hypotenuse) * (180/np.pi)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return angle_1, angle_2
 
 def normalized(value):
-    normalized_value = 500 * np.tanh((1/1000) * value)
+
+    normalized_value = 100 * np.tanh((1/100) * value)
+    depth[1] =  value
+    if value < 0:
+        normalized_value = 0
     return int(normalized_value)
 
+def rotate(thumbtip, indextip):
+
+    hypotenuse = np.sqrt((thumbtip[0] - indextip[0]) ** 2 + (thumbtip[1] - indextip[1]) ** 2)
+    adjacent = thumbtip[0] - indextip[0]
+    angle = np.arccos(adjacent/hypotenuse) * (180/np.pi)
+    return angle
 
 
 

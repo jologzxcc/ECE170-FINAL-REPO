@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import time
 
-from inverse_kinematics import inv, normalized, get_angle
+from inverse_kinematics import inv, normalized, get_angle, rotate
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -46,8 +46,8 @@ def estimate_hands():
                                                                                                      normalized_landmark_index_fingertip.y, 
                                                                                                      img_width, 
                                                                                                      img_height)
-            z_axis = normalized_landmark_index_fingertip.z
-            depth = normalized(abs(int(float(z_axis) * 1500)))
+            # z_axis = normalized_landmark_index_fingertip.z
+            # depth = normalized(abs(int(float(z_axis) * 1500)))
 
             normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
             pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, 
@@ -66,6 +66,8 @@ def estimate_hands():
                                                                                               normalized_landmark_mcp.y, 
                                                                                               img_width, 
                                                                                               img_height)
+            z_axis = normalized_landmark_mcp.z
+            depth = normalized(abs(int(float(z_axis) * 1500)))
 
             distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
             centroid = (int((pixel_coordinates_landmark_mcp[0] + pixel_coordinates_landmark_wrist[0])/2),
@@ -76,6 +78,7 @@ def estimate_hands():
             inverse = inv((centroid))
             joints = inverse[1]
             angles = get_angle(joints)
+            rotation = rotate(pixel_coordinates_landmark_thumbtip, pixel_coordinates_landmark_index_fingertip)
 
             image = cv2.line(image, (int(joints[0].x), 
                           int(joints[0].y)), 
@@ -92,8 +95,8 @@ def estimate_hands():
                           thickness=2)
         
             image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
-            angle_depth = [int(angles[0]), int(angles[1]), depth, distance, int(joints[1].y)]
-            print(angle_depth)
+            angle_depth = [int(angles[0]), int(angles[1]), depth, distance, rotation]
+            print(f"Rotation: {rotation}")
 
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))

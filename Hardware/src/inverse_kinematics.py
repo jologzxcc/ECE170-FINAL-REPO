@@ -37,8 +37,18 @@ def get_angle(joints):
     return angle_1, angle_2
 
 def normalized(value):
-    normalized_value = 500 * np.tanh((1/1000) * value)
+    normalized_value = 100 * np.tanh((1/100) * value)
+    if value < 0:
+        normalized_value = 0
     return int(normalized_value)
+
+def rotate(thumbtip, indextip):
+
+    hypotenuse = np.sqrt((thumbtip[0] - indextip[0]) ** 2 + (thumbtip[1] - indextip[1]) ** 2)
+    adjacent = thumbtip[0] - indextip[0]
+    angle = np.arccos(adjacent/hypotenuse) * (180/np.pi)
+    return angle
+
 
 
     
