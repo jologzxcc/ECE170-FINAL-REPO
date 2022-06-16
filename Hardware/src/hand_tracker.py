@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from pySerialTransfer import pySerialTransfer as txfer
-from inverse_kinematics import inv, get_angle, normalized, rotate
+from inverse_kinematics import inv, get_angle, normalized, rotate, distance_depth
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -50,8 +50,6 @@ def track():
                                                                                                                 normalized_landmark_index_fingertip.y, 
                                                                                                                 img_width, 
                                                                                                                 img_height)
-                        z_axis = normalized_landmark_index_fingertip.z
-                        depth = normalized(abs(int(float(z_axis) * 1500)))
                         
                         normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
                         pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, 
@@ -71,15 +69,22 @@ def track():
                                                                                                         img_width, 
                                                                                                         img_height)
 
+                        normalized_landmark_pinky = handLandmarks.landmark[mp_hands.HandLandmark.PINKY_MCP.value]
+                        pixel_coordinates_landmark_pinky = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_pinky.x, 
+                                                                                              normalized_landmark_pinky.y, 
+                                                                                              img_width, 
+                                                                                              img_height)
+
                         distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
                         centroid = (int((pixel_coordinates_landmark_mcp[0] + pixel_coordinates_landmark_wrist[0])/2),
                                     int((pixel_coordinates_landmark_mcp[1] + pixel_coordinates_landmark_wrist[1])/2))
 
                         dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
+                        depth = normalized(distance_depth(pixel_coordinates_landmark_pinky, pixel_coordinates_landmark_wrist))
     
                         inverse = inv((centroid))
                         joints = inverse[1]
-                        angles = get_angle(joints)
+                        angles = get_angle(joints, centroid)
                         rotation = rotate(pixel_coordinates_landmark_thumbtip, pixel_coordinates_landmark_index_fingertip)
                       
                         image = cv2.line(image, (int(joints[0].x), 
@@ -123,12 +128,9 @@ def track():
                                     else:
                                         print('ERROR: {}'.format(link.status))
                             
-                            # rec_list_  = link.rx_obj(obj_type=type(list_),
-                            #         obj_byte_size=list_size,
-                            #         list_format='i')
+                           
 
                             print('SENT: {}'.format(list_))
-                            # print('RCVD: {}'.format(rec_list_))
                             print(' ')  
                             
     

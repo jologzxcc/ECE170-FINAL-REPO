@@ -3,12 +3,16 @@ import mediapipe as mp
 import numpy as np
 import time
 
-from inverse_kinematics import inv, normalized, get_angle, rotate
+from inverse_kinematics import inv, normalized, get_angle, rotate, distance_depth
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
+# url = "http://192.168.50.168:8080/video"
+# cap = cv2.VideoCapture(url)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 class_and_coordinates = ""
 
@@ -46,9 +50,7 @@ def estimate_hands():
                                                                                                      normalized_landmark_index_fingertip.y, 
                                                                                                      img_width, 
                                                                                                      img_height)
-            # z_axis = normalized_landmark_index_fingertip.z
-            # depth = normalized(abs(int(float(z_axis) * 1500)))
-
+  
             normalized_landmark_thumbtip = handLandmarks.landmark[mp_hands.HandLandmark.THUMB_TIP.value]
             pixel_coordinates_landmark_thumbtip = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_thumbtip.x, 
                                                                                               normalized_landmark_thumbtip.y, 
@@ -66,18 +68,26 @@ def estimate_hands():
                                                                                               normalized_landmark_mcp.y, 
                                                                                               img_width, 
                                                                                               img_height)
-            z_axis = normalized_landmark_mcp.z
-            depth = normalized(abs(int(float(z_axis) * 1500)))
+
+            normalized_landmark_pinky = handLandmarks.landmark[mp_hands.HandLandmark.PINKY_MCP.value]
+            pixel_coordinates_landmark_pinky = mp_drawing._normalized_to_pixel_coordinates(normalized_landmark_pinky.x, 
+                                                                                              normalized_landmark_pinky.y, 
+                                                                                              img_width, 
+                                                                                              img_height)                                                                                  
+            # z_axis = normalized_landmark_mcp.z
+            # depth = normalized(abs(int(float(z_axis) * 1500)))
+
+            depth_distance = normalized(distance_depth(pixel_coordinates_landmark_pinky, pixel_coordinates_landmark_wrist))
 
             distance = np.sqrt(np.square(pixel_coordinates_landmark_index_fingertip[0] - pixel_coordinates_landmark_thumbtip[0])+np.square(pixel_coordinates_landmark_index_fingertip[1] - pixel_coordinates_landmark_thumbtip[1]))
             centroid = (int((pixel_coordinates_landmark_mcp[0] + pixel_coordinates_landmark_wrist[0])/2),
                         int((pixel_coordinates_landmark_mcp[1] + pixel_coordinates_landmark_wrist[1])/2))
 
-            dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
+            # dot = (int(pixel_coordinates_landmark_index_fingertip[0]), int(pixel_coordinates_landmark_index_fingertip[1]))
           
             inverse = inv((centroid))
             joints = inverse[1]
-            angles = get_angle(joints)
+            angles = get_angle(joints, centroid)
             rotation = rotate(pixel_coordinates_landmark_thumbtip, pixel_coordinates_landmark_index_fingertip)
 
             image = cv2.line(image, (int(joints[0].x), 
@@ -95,9 +105,11 @@ def estimate_hands():
                           thickness=2)
         
             image = cv2.circle(image, centroid[:2], radius=10, color=(0, 0, 255), thickness=-1)
-            angle_depth = [int(angles[0]), int(angles[1]), depth, distance, rotation]
-            print(f"Rotation: {rotation}")
+            # image = cv2.putText(image, "Swivel angle:" + str(int(rotation)), (300, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
+            angle_depth = [int(angles[0]), int(angles[1]), depth_distance, distance, rotation]
+            # print(f"Angle 1: {int(angles[0])}, Angle 2: {int(angles[1])}")
+            print(f"Depth: {int(depth_distance)}")
 
         cv2.imshow('Detected Hands', cv2.flip(image, 1))
 

@@ -24,6 +24,7 @@ int angle2 = 0;
 int depth = 0;
 int rotation = 0;
 
+
 AccelStepper stepper_depth = AccelStepper(motorInterfaceType, stepPinDepth, dirPinDepth);
 AccelStepper stepper_1 = AccelStepper(motorInterfaceType, stepPin1, dirPin1);
 AccelStepper stepper_2 = AccelStepper(motorInterfaceType, stepPin2, dirPin2);
@@ -61,20 +62,15 @@ void loop(){
      
 
 //////////////////////////  SERVO 1 CODE  ///////////////////////////////////////////////////////////////////
-      
-      // myservoClaw.write(100);
-
-      // myservoRotate.write(10);
-
 if(true){
 
       int mapped_claw = map(claw, 200, 0, 0, 100);
       myservoClaw.write(mapped_claw);
 
-      if(rotation <= 70){
+      if(rotation <= 20){
       myservoRotate.write(10);      
       }
-      if(rotation > 70){
+      if(rotation > 20){
       myservoRotate.write(110);
       }
       
@@ -88,15 +84,15 @@ if(true){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////  MOTOR 2 CODE  /////////////////////////////////////////////////////////////////
-      
+
       int step_angle2 = angle2 / 1.8;
-      stepper_2.moveTo(step_angle2 * 2.25);
+      stepper_2.moveTo(step_angle2 * 6);
       stepper_2.run();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////  MOTOR 3 CODE  /////////////////////////////////////////////////////////////////
      
-      stepper_depth.moveTo(depth * 20);
+      stepper_depth.moveTo(depth * 25);
       stepper_depth.run();
       
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
